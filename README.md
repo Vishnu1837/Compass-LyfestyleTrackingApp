@@ -1,4 +1,4 @@
-# Fitness Hub
+# Compass
 
 A personal fitness command center — workouts, nutrition, sleep, supplements, steps, and cardio
 in one place, with an AI coach on top. Source of truth for your fitness life, built on free tiers.

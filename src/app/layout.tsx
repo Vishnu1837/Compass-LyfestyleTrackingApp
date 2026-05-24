@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fitness Hub",
+  title: "Compass",
   description: "Your personal fitness command center.",
 };
 
