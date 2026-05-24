@@ -1,7 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_ROUTES = ["/login", "/auth", "/"];
+// "/" handles its own auth-based redirect; "/api" is gated per-procedure/route,
+// not by the proxy. Everything else requires a session.
+const PUBLIC_ROUTES = ["/login", "/auth", "/api", "/"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
