@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fitness Hub
 
-## Getting Started
+A personal fitness command center — workouts, nutrition, sleep, supplements, steps, and cardio
+in one place, with an AI coach on top. Source of truth for your fitness life, built on free tiers.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router) + **TypeScript** + **Tailwind v4**
+- **shadcn/ui** + **Recharts** for UI and charts
+- **tRPC** for typed API routes
+- **Supabase** — Postgres, Auth (email + Google), Row Level Security, Storage
+- **Gemini 2.5 Flash** for the AI coach (behind a swappable abstraction)
+- **Resend** for weekly review emails
+- **Vercel** for hosting + cron
+
+## Architecture
+
+Workout sources sit behind a `WorkoutProvider` interface. Only one adapter (`LyftaAdapter`)
+talks to Lyfta; everything else — dashboard, PR detection, AI coach — reads canonical
+`Workout` / `Exercise` / `Set` types. This lets Lyfta be swapped for native in-app tracking
+later without rewriting the app.
+
+## Build phases
+
+1. **Foundation** — scaffold, auth, dashboard shell ✅ (current)
+2. **Strength** — Lyfta sync via the provider abstraction
+3. **Cardio** — Strava OAuth + activity sync (full GPS routes/maps)
+4. **Steps** — Google Fit sync
+5. Nutrition (Open Food Facts) · 6. Sleep/supplements/water · 7. AI coach ·
+   8. Accountability · 9. Body comp + polish · 10. Native tracking · 11. Mobile
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in your Supabase project values
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 — you'll be redirected to `/login`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Supabase setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Create a project at [supabase.com](https://supabase.com).
+2. Copy the project URL and anon key into `.env.local`.
+3. In **Authentication → Providers**, enable Email and Google.
+4. Add `http://localhost:3000/auth/callback` to the allowed redirect URLs.
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/
+    (app)/            authenticated routes (sidebar shell) — /dashboard, future modules
+    auth/             OAuth callback + sign-out action
+    login/            email + Google sign-in
+    api/trpc/         tRPC fetch handler
+  components/         app shell + shadcn/ui primitives
+  config/nav.ts       sidebar navigation (modules gated by `ready`)
+  lib/supabase/       browser + server clients, session middleware
+  lib/trpc/           tRPC React provider
+  server/             tRPC init, context, routers
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Total monthly cost at personal-use volume: **$0**.

@@ -1,11 +1,12 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function Home() {
+export async function createTRPCContext() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  redirect(user ? "/dashboard" : "/login");
+  return { supabase, user };
 }
+
+export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
