@@ -33,6 +33,7 @@ export interface CanonicalExerciseEntry {
   exerciseExternalId?: string | null;
   exerciseName: string;
   exerciseType?: string | null;
+  exerciseImageUrl?: string | null;
   orderIndex: number;
   sets: CanonicalSet[];
 }

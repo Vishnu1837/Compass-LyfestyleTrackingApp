@@ -26,21 +26,52 @@ export async function syncLyfta(
     };
   }
 
-  // 1. Sync the exercise library and build an external_id -> our id map.
-  const exercises = await provider.listExercises();
-  if (exercises.length > 0) {
+  // 1. Incremental: which workouts to pull.
+  const { data: cred } = await supabase
+    .from("api_credentials")
+    .select("last_sync_at")
+    .eq("user_id", userId)
+    .eq("provider", "lyfta")
+    .maybeSingle();
+  const since = cred?.last_sync_at ? new Date(cred.last_sync_at) : undefined;
+
+  // Pull full workout details once (the adapter caches the paged results).
+  const summaries = await provider.listWorkouts(since);
+  const details: WorkoutDetail[] = [];
+  for (const summary of summaries) {
+    if (!summary.sourceId) continue;
+    details.push(await provider.getWorkout(summary.sourceId));
+  }
+
+  // 2. Derive the exercise library from the exercises actually performed in
+  // these workouts (Lyfta's /exercises endpoint returns its entire 10k+
+  // catalog, which we don't want to mirror per-user). Then map external id
+  // -> our row id so workout_exercises link correctly and PRs can compute.
+  const performed = new Map<
+    string,
+    { name: string; type: string | null; image: string | null }
+  >();
+  for (const d of details) {
+    for (const e of d.exercises) {
+      if (e.exerciseExternalId && !performed.has(e.exerciseExternalId)) {
+        performed.set(e.exerciseExternalId, {
+          name: e.exerciseName,
+          type: e.exerciseType ?? null,
+          image: e.exerciseImageUrl ?? null,
+        });
+      }
+    }
+  }
+
+  if (performed.size > 0) {
     await supabase.from("exercises").upsert(
-      exercises.map((e) => ({
+      Array.from(performed.entries()).map(([externalId, e]) => ({
         user_id: userId,
         source: "lyfta",
-        external_id: e.externalId,
+        external_id: externalId,
         name: e.name,
-        image_url: e.imageUrl,
-        exercise_type: e.exerciseType,
-        equipment_ids: e.equipmentIds ?? [],
-        body_part_ids: e.bodyPartIds ?? [],
-        target_muscle_ids: e.targetMuscleIds ?? [],
-        synergist_muscle_ids: e.synergistMuscleIds ?? [],
+        image_url: e.image,
+        exercise_type: e.type,
       })),
       { onConflict: "user_id,source,external_id" },
     );
@@ -50,26 +81,15 @@ export async function syncLyfta(
     .from("exercises")
     .select("id, external_id")
     .eq("user_id", userId)
-    .eq("source", "lyfta");
+    .eq("source", "lyfta")
+    .limit(5000);
   const externalToId = new Map<string, string>(
     (exRows ?? []).map((r) => [r.external_id as string, r.id as string]),
   );
 
-  // 2. Incremental workout sync.
-  const { data: cred } = await supabase
-    .from("api_credentials")
-    .select("last_sync_at")
-    .eq("user_id", userId)
-    .eq("provider", "lyfta")
-    .maybeSingle();
-  const since = cred?.last_sync_at ? new Date(cred.last_sync_at) : undefined;
-
-  const summaries = await provider.listWorkouts(since);
+  // 3. Write the workouts.
   let workoutsSynced = 0;
-
-  for (const summary of summaries) {
-    if (!summary.sourceId) continue;
-    const detail = await provider.getWorkout(summary.sourceId);
+  for (const detail of details) {
     await upsertWorkout(supabase, userId, detail, externalToId);
     workoutsSynced++;
   }
@@ -85,7 +105,7 @@ export async function syncLyfta(
   return {
     ok: true,
     workoutsSynced,
-    exercisesSynced: exercises.length,
+    exercisesSynced: performed.size,
   };
 }
 

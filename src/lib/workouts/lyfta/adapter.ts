@@ -151,6 +151,7 @@ export class LyftaAdapter implements WorkoutProvider {
       exerciseExternalId: e.exercise_id != null ? String(e.exercise_id) : null,
       exerciseName: e.excercise_name,
       exerciseType: e.exercise_type ?? null,
+      exerciseImageUrl: e.exercise_image ?? null,
       orderIndex: index,
       sets: (e.sets ?? []).map((s, i) => this.mapSet(s, i)),
     };
