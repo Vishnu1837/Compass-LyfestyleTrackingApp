@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { syncLyfta } from "@/lib/workouts/lyfta/sync";
+import { syncStrava } from "@/lib/cardio/strava/sync";
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
-// Nightly Lyfta sync for every connected user. Triggered by Vercel Cron
-// (see vercel.json) and guarded by CRON_SECRET.
+// Nightly sync of every connected provider for every user. Triggered by Vercel
+// Cron (see vercel.json) and guarded by CRON_SECRET. Strava also syncs in near
+// real-time via webhook; this is the backfill safety net.
 export async function GET(request: Request) {
   const auth = request.headers.get("authorization");
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -15,15 +17,19 @@ export async function GET(request: Request) {
   const supabase = createAdminClient();
   const { data: creds } = await supabase
     .from("api_credentials")
-    .select("user_id")
-    .eq("provider", "lyfta");
+    .select("user_id, provider")
+    .in("provider", ["lyfta", "strava"]);
 
   const results: Record<string, unknown> = {};
-  for (const { user_id } of creds ?? []) {
+  for (const { user_id, provider } of creds ?? []) {
+    const key = `${provider}:${user_id}`;
     try {
-      results[user_id] = await syncLyfta(supabase, user_id);
+      results[key] =
+        provider === "lyfta"
+          ? await syncLyfta(supabase, user_id)
+          : await syncStrava(supabase, user_id);
     } catch (err) {
-      results[user_id] = {
+      results[key] = {
         ok: false,
         message: err instanceof Error ? err.message : "sync error",
       };

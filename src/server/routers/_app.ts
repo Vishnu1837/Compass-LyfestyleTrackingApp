@@ -1,6 +1,7 @@
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { lyftaRouter } from "./lyfta";
 import { workoutsRouter } from "./workouts";
+import { cardioRouter } from "./cardio";
 
 export const appRouter = router({
   health: publicProcedure.query(() => ({ ok: true, ts: Date.now() })),
@@ -12,6 +13,7 @@ export const appRouter = router({
 
   lyfta: lyftaRouter,
   workouts: workoutsRouter,
+  cardio: cardioRouter,
 });
 
 export type AppRouter = typeof appRouter;

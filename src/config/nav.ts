@@ -22,7 +22,7 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard, ready: true },
   { title: "Strength", href: "/strength", icon: Dumbbell, ready: true },
-  { title: "Cardio", href: "/cardio", icon: Heart, ready: false },
+  { title: "Cardio", href: "/cardio", icon: Heart, ready: true },
   { title: "Steps", href: "/steps", icon: Footprints, ready: false },
   { title: "Nutrition", href: "/nutrition", icon: UtensilsCrossed, ready: false },
   { title: "Sleep", href: "/sleep", icon: Moon, ready: false },

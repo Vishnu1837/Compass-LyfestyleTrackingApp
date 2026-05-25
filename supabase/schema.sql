@@ -51,6 +51,7 @@ create table public.api_credentials (
   refresh_token text,       -- encrypted at rest by the app
   expires_at timestamptz,
   last_sync_at timestamptz,
+  external_account_id text, -- e.g. Strava athlete id, for webhook routing
   created_at timestamptz not null default now(),
   unique (user_id, provider)
 );

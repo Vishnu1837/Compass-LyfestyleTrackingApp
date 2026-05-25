@@ -1,0 +1,10 @@
+import { ActivityDetail } from "./activity-detail";
+
+export default async function CardioDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <ActivityDetail id={id} />;
+}
