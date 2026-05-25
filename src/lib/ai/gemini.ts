@@ -12,24 +12,23 @@ export class GeminiProvider implements AIProvider {
     this.client = new GoogleGenAI({ apiKey });
   }
 
-  async generateJSON<T>(systemPrompt: string, userPrompt: string): Promise<T> {
+  async generateJSON<T>(
+    systemPrompt: string,
+    userPrompt: string,
+    schema?: unknown,
+  ): Promise<T> {
     const res = await this.client.models.generateContent({
       model: MODEL,
       contents: userPrompt,
       config: {
         systemInstruction: systemPrompt,
         responseMimeType: "application/json",
+        // A response schema makes Gemini emit guaranteed well-formed JSON.
+        ...(schema ? { responseSchema: schema } : {}),
         temperature: 0.4,
       },
     });
-    const text = res.text ?? "";
-    try {
-      return JSON.parse(text) as T;
-    } catch {
-      // Strip accidental code fences if the model added them.
-      const cleaned = text.replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
-      return JSON.parse(cleaned) as T;
-    }
+    return parseJsonLoose<T>(res.text ?? "");
   }
 
   async generateText(systemPrompt: string, userPrompt: string): Promise<string> {
@@ -40,4 +39,31 @@ export class GeminiProvider implements AIProvider {
     });
     return res.text ?? "";
   }
+}
+
+// Tolerant JSON parse: handles stray code fences and trailing commas that
+// models occasionally emit even in JSON mode.
+function parseJsonLoose<T>(text: string): T {
+  const tryParse = (s: string): T | undefined => {
+    try {
+      return JSON.parse(s) as T;
+    } catch {
+      return undefined;
+    }
+  };
+
+  let out = tryParse(text);
+  if (out !== undefined) return out;
+
+  let cleaned = text
+    .replace(/^\s*```(?:json)?/i, "")
+    .replace(/```\s*$/, "")
+    .trim();
+  // Remove trailing commas before } or ].
+  cleaned = cleaned.replace(/,(\s*[}\]])/g, "$1");
+
+  out = tryParse(cleaned);
+  if (out !== undefined) return out;
+
+  throw new Error("Model returned unparseable JSON");
 }

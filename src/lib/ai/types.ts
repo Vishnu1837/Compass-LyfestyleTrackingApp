@@ -4,8 +4,13 @@
 
 export interface AIProvider {
   readonly name: string;
-  /** Returns model output as parsed JSON. */
-  generateJSON<T>(systemPrompt: string, userPrompt: string): Promise<T>;
+  /** Returns model output as parsed JSON. Pass a provider-native response
+   *  schema to constrain the model to valid, well-formed JSON. */
+  generateJSON<T>(
+    systemPrompt: string,
+    userPrompt: string,
+    schema?: unknown,
+  ): Promise<T>;
   /** Returns model output as plain text. */
   generateText(systemPrompt: string, userPrompt: string): Promise<string>;
 }

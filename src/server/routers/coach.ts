@@ -2,7 +2,7 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 import { getAIProvider, isAIConfigured } from "@/lib/ai";
 import { buildCoachContext } from "@/lib/ai/context";
-import { CHAT_SYSTEM, REVIEW_SYSTEM } from "@/lib/ai/prompts";
+import { CHAT_SYSTEM, REVIEW_SCHEMA, REVIEW_SYSTEM } from "@/lib/ai/prompts";
 import type { CoachReview } from "@/lib/ai/types";
 
 export const coachRouter = router({
@@ -20,6 +20,7 @@ export const coachRouter = router({
       review = await ai.generateJSON<CoachReview>(
         REVIEW_SYSTEM,
         `Here is my last 14 days of data:\n${context}\n\nReview my recent training and habits.`,
+        REVIEW_SCHEMA,
       );
     } catch (err) {
       return {

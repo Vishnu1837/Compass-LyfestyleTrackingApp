@@ -31,6 +31,40 @@ Return ONLY a JSON object with this exact shape (no markdown, no prose outside J
   ]
 }`;
 
+// Gemini response schema (plain JSON-schema-like object the SDK accepts) that
+// forces a valid CoachReview shape.
+export const REVIEW_SCHEMA = {
+  type: "object",
+  properties: {
+    summary: { type: "string" },
+    wins: { type: "array", items: { type: "string" } },
+    concerns: { type: "array", items: { type: "string" } },
+    recommendations: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          area: {
+            type: "string",
+            enum: [
+              "training",
+              "nutrition",
+              "recovery",
+              "supplementation",
+              "general",
+            ],
+          },
+          suggestion: { type: "string" },
+        },
+        required: ["area", "suggestion"],
+        propertyOrdering: ["area", "suggestion"],
+      },
+    },
+  },
+  required: ["summary", "wins", "concerns", "recommendations"],
+  propertyOrdering: ["summary", "wins", "concerns", "recommendations"],
+} as const;
+
 export const CHAT_SYSTEM = `${COACH_GUARDRAILS}
 
 Answer the user's question conversationally in plain text (no JSON, no markdown
