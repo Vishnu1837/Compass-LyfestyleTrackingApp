@@ -8,6 +8,7 @@ import {
   Moon,
   Pill,
   Sparkles,
+  Trophy,
   UtensilsCrossed,
   type LucideIcon,
 } from "lucide-react";
@@ -31,4 +32,5 @@ export const navItems: NavItem[] = [
   { title: "Water", href: "/water", icon: Droplet, ready: true },
   { title: "Body", href: "/body", icon: Activity, ready: false },
   { title: "AI Coach", href: "/coach", icon: Sparkles, ready: true },
+  { title: "Accountability", href: "/accountability", icon: Trophy, ready: true },
 ];
