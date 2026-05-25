@@ -4,6 +4,9 @@ import { workoutsRouter } from "./workouts";
 import { cardioRouter } from "./cardio";
 import { stepsRouter } from "./steps";
 import { nutritionRouter } from "./nutrition";
+import { sleepRouter } from "./sleep";
+import { supplementsRouter } from "./supplements";
+import { waterRouter } from "./water";
 
 export const appRouter = router({
   health: publicProcedure.query(() => ({ ok: true, ts: Date.now() })),
@@ -18,6 +21,9 @@ export const appRouter = router({
   cardio: cardioRouter,
   steps: stepsRouter,
   nutrition: nutritionRouter,
+  sleep: sleepRouter,
+  supplements: supplementsRouter,
+  water: waterRouter,
 });
 
 export type AppRouter = typeof appRouter;

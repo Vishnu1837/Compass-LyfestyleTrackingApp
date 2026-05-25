@@ -1,5 +1,6 @@
 import {
   Activity,
+  Droplet,
   Dumbbell,
   Footprints,
   Heart,
@@ -25,8 +26,9 @@ export const navItems: NavItem[] = [
   { title: "Cardio", href: "/cardio", icon: Heart, ready: true },
   { title: "Steps", href: "/steps", icon: Footprints, ready: true },
   { title: "Nutrition", href: "/nutrition", icon: UtensilsCrossed, ready: true },
-  { title: "Sleep", href: "/sleep", icon: Moon, ready: false },
-  { title: "Supplements", href: "/supplements", icon: Pill, ready: false },
+  { title: "Sleep", href: "/sleep", icon: Moon, ready: true },
+  { title: "Supplements", href: "/supplements", icon: Pill, ready: true },
+  { title: "Water", href: "/water", icon: Droplet, ready: true },
   { title: "Body", href: "/body", icon: Activity, ready: false },
   { title: "AI Coach", href: "/coach", icon: Sparkles, ready: false },
 ];
