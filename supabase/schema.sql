@@ -1,7 +1,7 @@
--- Compass — full schema. Paste into Supabase SQL Editor (Dashboard -> SQL Editor -> New query) and Run.
+-- VXthenics — full schema. Paste into Supabase SQL Editor (Dashboard -> SQL Editor -> New query) and Run.
 -- Generated from supabase/migrations/*.sql in order.
 
--- Compass — initial schema
+-- VXthenics — initial schema
 -- Source-agnostic workout model + all module tables, with Row Level Security.
 -- Every table is owned by a user and only that user can read/write their rows.
 
@@ -337,7 +337,7 @@ create table public.accountability_score (
   unique (user_id, week_start)
 );
 
--- Compass — Row Level Security
+-- VXthenics — Row Level Security
 -- Each user can only see and modify their own rows. Child tables
 -- (workout_exercises, workout_sets) inherit ownership via their parent workout.
 
@@ -435,7 +435,7 @@ create policy "workout_sets owner" on public.workout_sets
     )
   );
 
--- Compass — personal record recomputation
+-- VXthenics — personal record recomputation
 -- Derives PRs from canonical workout_sets for a single user. Called after each
 -- sync. Strength records only here (cardio PRs land with Strava in Phase 3).
 --

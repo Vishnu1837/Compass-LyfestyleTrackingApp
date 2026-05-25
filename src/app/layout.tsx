@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Compass",
+  title: "VXthenics",
   description: "Your personal fitness command center.",
 };
 

@@ -21,7 +21,7 @@ export default function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Welcome to Compass</CardTitle>
+          <CardTitle>Welcome to VXthenics</CardTitle>
           <CardDescription>
             The foundation is live. Next up: connect Lyfta for strength
             training, then Strava for cardio.

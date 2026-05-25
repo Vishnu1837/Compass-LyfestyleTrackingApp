@@ -1,4 +1,4 @@
--- Compass — personal record recomputation
+-- VXthenics — personal record recomputation
 -- Derives PRs from canonical workout_sets for a single user. Called after each
 -- sync. Strength records only here (cardio PRs land with Strava in Phase 3).
 --

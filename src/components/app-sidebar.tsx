@@ -13,7 +13,7 @@ export function AppSidebar() {
     <aside className="bg-card hidden w-60 shrink-0 flex-col border-r md:flex">
       <div className="flex h-14 items-center gap-2 border-b px-4">
         <Dumbbell className="size-5" />
-        <span className="font-semibold">Compass</span>
+        <span className="font-semibold">VXthenics</span>
       </div>
       <nav className="flex-1 space-y-1 overflow-y-auto p-2">
         {navItems.map((item) => {

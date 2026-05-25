@@ -1,4 +1,4 @@
--- Compass — initial schema
+-- VXthenics — initial schema
 -- Source-agnostic workout model + all module tables, with Row Level Security.
 -- Every table is owned by a user and only that user can read/write their rows.
 

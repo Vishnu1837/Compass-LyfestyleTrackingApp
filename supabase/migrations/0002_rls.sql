@@ -1,4 +1,4 @@
--- Compass — Row Level Security
+-- VXthenics — Row Level Security
 -- Each user can only see and modify their own rows. Child tables
 -- (workout_exercises, workout_sets) inherit ownership via their parent workout.
 
