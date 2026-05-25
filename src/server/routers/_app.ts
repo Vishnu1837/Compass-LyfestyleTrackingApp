@@ -3,6 +3,7 @@ import { lyftaRouter } from "./lyfta";
 import { workoutsRouter } from "./workouts";
 import { cardioRouter } from "./cardio";
 import { stepsRouter } from "./steps";
+import { nutritionRouter } from "./nutrition";
 
 export const appRouter = router({
   health: publicProcedure.query(() => ({ ok: true, ts: Date.now() })),
@@ -16,6 +17,7 @@ export const appRouter = router({
   workouts: workoutsRouter,
   cardio: cardioRouter,
   steps: stepsRouter,
+  nutrition: nutritionRouter,
 });
 
 export type AppRouter = typeof appRouter;
