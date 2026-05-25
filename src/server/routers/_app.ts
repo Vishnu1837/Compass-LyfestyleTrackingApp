@@ -7,6 +7,7 @@ import { nutritionRouter } from "./nutrition";
 import { sleepRouter } from "./sleep";
 import { supplementsRouter } from "./supplements";
 import { waterRouter } from "./water";
+import { coachRouter } from "./coach";
 
 export const appRouter = router({
   health: publicProcedure.query(() => ({ ok: true, ts: Date.now() })),
@@ -24,6 +25,7 @@ export const appRouter = router({
   sleep: sleepRouter,
   supplements: supplementsRouter,
   water: waterRouter,
+  coach: coachRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -30,5 +30,5 @@ export const navItems: NavItem[] = [
   { title: "Supplements", href: "/supplements", icon: Pill, ready: true },
   { title: "Water", href: "/water", icon: Droplet, ready: true },
   { title: "Body", href: "/body", icon: Activity, ready: false },
-  { title: "AI Coach", href: "/coach", icon: Sparkles, ready: false },
+  { title: "AI Coach", href: "/coach", icon: Sparkles, ready: true },
 ];
