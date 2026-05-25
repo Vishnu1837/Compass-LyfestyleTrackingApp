@@ -23,6 +23,9 @@ export interface CanonicalSet {
   distance?: number | null;
   isCompleted: boolean;
   setType?: SetType | null;
+  /** Set when the provider flagged this set as a record (e.g. Lyfta). */
+  recordType?: string | null;
+  recordValue?: number | null;
 }
 
 export interface CanonicalExerciseEntry {
